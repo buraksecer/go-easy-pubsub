@@ -19,7 +19,7 @@ func Create(clientId string) (Client, context.Context, error) {
 	c, err := pubsub.NewClient(ctx, clientId)
 
 	if err != nil {
-		err = clienterr.ClientCannotCreate
+		err = clienterr.ErrClientCannotCreate
 	}
 
 	client := Client{

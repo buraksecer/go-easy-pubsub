@@ -2,4 +2,5 @@ package convererr
 
 import "errors"
 
-var JsonMarshalCanNotBeParse = errors.New("json marshal can not be parse")
+// ErrJsonMarshalCanNotBeParse err
+var ErrJsonMarshalCanNotBeParse = errors.New("json marshal can not be parse")

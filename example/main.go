@@ -23,19 +23,18 @@ func main() {
 	// Get a topic list
 	topics := topic.Topics()
 
-	for i, v := range topics.Topics {
-		r := fmt.Sprintf("index:/%d/ - value:/%s/ ", i, v)
-		fmt.Println(r)
+	for _, v := range topics.Topics {
+		fmt.Println(v)
 	}
 
 	// Create a new subscription
-	topic.CreateSubscription(topicName,subName)
+	topic.CreateSubscription(topicName, subName)
 
 	// Get subscriptions
 	topic.Subscriptions(topicName)
 
 	// Publish a new message
-	topic.Publish(topicName,"Fly me to the moon..")
+	topic.Publish(topicName, "Fly me to the moon..")
 
 	// Get message to sub
 	topic.Receive(subName)

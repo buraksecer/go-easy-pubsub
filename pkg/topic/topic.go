@@ -33,22 +33,22 @@ func Create(topicName string) error {
 	defer client.Close(c)
 
 	if err != nil {
-		return clienterr.ClientCannotCreate
+		return clienterr.ErrClientCannotCreate
 	}
 
 	e := c.Client.Topic(topicName)
 	ok, err := e.Exists(ctx)
 	if err != nil {
-		return topicerr.TopicCanNotExists
+		return topicerr.ErrTopicCanNotExists
 	}
 	if ok {
-		return topicerr.TopicDoExist
+		return topicerr.ErrTopicDoExist
 	}
 
 	topic, err := c.Client.CreateTopic(ctx, topicName)
 
 	if err != nil {
-		return topicerr.TopicCanNotCreate
+		return topicerr.ErrTopicCanNotCreate
 	}
 
 	defer topic.Stop()
@@ -64,16 +64,15 @@ func Delete(topicName string) (bool, error) {
 	defer client.Close(c)
 
 	if err != nil {
-		return false, clienterr.ClientCannotCreate
+		return false, clienterr.ErrClientCannotCreate
 	}
 
 	topic := c.Client.Topic(topicName)
 	defer topic.Stop()
 	if err := topic.Delete(ctx); err != nil {
-		return false, topicerr.TopicCanNotDelete
-	} else {
-		return true, nil
+		return false, topicerr.ErrTopicCanNotDelete
 	}
+	return true, nil
 }
 
 // Exists topic control in project
@@ -84,7 +83,7 @@ func Exists(topicName string) (bool, error) {
 	defer client.Close(c)
 
 	if err != nil {
-		return false, clienterr.ClientCannotCreate
+		return false, clienterr.ErrClientCannotCreate
 	}
 
 	e := c.Client.Topic(topicName)
@@ -101,7 +100,7 @@ func Topics() topicres.TopicsModel {
 	defer client.Close(c)
 
 	if err != nil {
-		log.Println(clienterr.ClientCannotCreate)
+		log.Println(clienterr.ErrClientCannotCreate)
 		return topics
 	}
 
@@ -129,7 +128,7 @@ func CreateSubscription(topicName string, subName string) {
 	defer client.Close(c)
 
 	if err != nil {
-		log.Println(clienterr.ClientCannotCreate)
+		log.Println(clienterr.ErrClientCannotCreate)
 		return
 	}
 
@@ -139,7 +138,7 @@ func CreateSubscription(topicName string, subName string) {
 		return
 	}
 	if !exist {
-		log.Println(topicerr.TopicDoNotExist)
+		log.Println(topicerr.ErrTopicDoNotExist)
 		return
 	}
 
@@ -169,7 +168,7 @@ func Subscriptions(topicName string) {
 	defer client.Close(c)
 
 	if err != nil {
-		log.Println(clienterr.ClientCannotCreate)
+		log.Println(clienterr.ErrClientCannotCreate)
 	}
 
 	topic := c.Client.Topic(topicName)
@@ -199,7 +198,7 @@ func Publish(topicName string, message interface{}) (bool, error) {
 	defer client.Close(c)
 
 	if err != nil {
-		return false, clienterr.ClientCannotCreate
+		return false, clienterr.ErrClientCannotCreate
 	}
 
 	topic := c.Client.Topic(topicName)
@@ -208,7 +207,7 @@ func Publish(topicName string, message interface{}) (bool, error) {
 
 	m, err := json.Marshal(message)
 	if err != nil {
-		return false, convererr.JsonMarshalCanNotBeParse
+		return false, convererr.ErrJsonMarshalCanNotBeParse
 	}
 
 	var results []*pubsub.PublishResult

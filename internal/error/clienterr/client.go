@@ -2,4 +2,5 @@ package clienterr
 
 import "errors"
 
-var ClientCannotCreate = errors.New("client can not create")
+// ErrClientCannotCreate err
+var ErrClientCannotCreate = errors.New("client can not create")

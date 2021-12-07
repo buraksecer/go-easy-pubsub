@@ -2,8 +2,17 @@ package topicerr
 
 import "errors"
 
-var TopicCanNotCreate = errors.New("topic can not create")
-var TopicDoExist = errors.New("topic do exist")
-var TopicDoNotExist = errors.New("topic do not exist")
-var TopicCanNotExists = errors.New("topic does not exist")
-var TopicCanNotDelete = errors.New("topic can not delete")
+// ErrTopicCanNotCreate err
+var ErrTopicCanNotCreate = errors.New("topic can not create")
+
+// ErrTopicDoExist err
+var ErrTopicDoExist = errors.New("topic do exist")
+
+// ErrTopicDoNotExist err
+var ErrTopicDoNotExist = errors.New("topic do not exist")
+
+// ErrTopicCanNotExists err
+var ErrTopicCanNotExists = errors.New("topic does not exist")
+
+// ErrTopicCanNotDelete err
+var ErrTopicCanNotDelete = errors.New("topic can not delete")
