@@ -17,12 +17,15 @@ import (
 	"time"
 )
 
+// Local client id (pointer)
 var _clientId *string
 
+// Init must call one time every operation
 func Init(clientId string) {
 	_clientId = &clientId
 }
 
+// Create a new topic in project
 func Create(topicName string) error {
 
 	c, ctx, err := client.Create(*_clientId)
@@ -53,6 +56,7 @@ func Create(topicName string) error {
 	return err
 }
 
+// Delete topic in project
 func Delete(topicName string) (bool, error) {
 
 	c, ctx, err := client.Create(*_clientId)
@@ -72,6 +76,7 @@ func Delete(topicName string) (bool, error) {
 	}
 }
 
+// Exists topic control in project
 func Exists(topicName string) (bool, error) {
 
 	c, ctx, err := client.Create(*_clientId)
@@ -86,6 +91,7 @@ func Exists(topicName string) (bool, error) {
 	return e.Exists(ctx)
 }
 
+// Topics list in project
 func Topics() topicres.TopicsModel {
 
 	topics := topicres.TopicsModel{}
@@ -116,6 +122,7 @@ func Topics() topicres.TopicsModel {
 	return topics
 }
 
+// CreateSubscription a new sub in project
 func CreateSubscription(topicName string, subName string) {
 	c, ctx, err := client.Create(*_clientId)
 
@@ -154,6 +161,7 @@ func CreateSubscription(topicName string, subName string) {
 	log.Println(sub)
 }
 
+// Subscriptions list in a project
 func Subscriptions(topicName string) {
 
 	c, ctx, err := client.Create(*_clientId)
@@ -183,6 +191,7 @@ func Subscriptions(topicName string) {
 	}
 }
 
+// Publish a new message to sub
 func Publish(topicName string, message interface{}) (bool, error) {
 
 	c, ctx, err := client.Create(*_clientId)
@@ -221,6 +230,7 @@ func Publish(topicName string, message interface{}) (bool, error) {
 	return true, nil
 }
 
+// Receive get message to sub
 func Receive(subName string) {
 
 	ctx := context.Background()
