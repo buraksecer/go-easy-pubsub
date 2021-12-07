@@ -4,7 +4,7 @@
 ### Installation
 
 ```
-go get github.com/buraksecer/go-easy-pubsub v0.0.0
+go get github.com/buraksecer/go-easy-pubsub v0.0.1
 ```
 
 Google pub/sub service easy way to use
