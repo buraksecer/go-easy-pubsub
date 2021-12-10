@@ -1,6 +1,6 @@
 package topicres
 
-// TopicsModel is a struct
-type TopicsModel struct {
+// Topics is a struct
+type Topics struct {
 	Topics []string
 }

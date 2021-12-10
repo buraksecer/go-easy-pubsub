@@ -16,3 +16,6 @@ var ErrTopicCanNotExists = errors.New("topic does not exist")
 
 // ErrTopicCanNotDelete err
 var ErrTopicCanNotDelete = errors.New("topic can not delete")
+
+// ErrTopicReceivedMessagesNotFound err
+var ErrTopicReceivedMessagesNotFound = errors.New("received messages not found")

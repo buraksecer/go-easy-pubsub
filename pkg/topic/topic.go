@@ -4,10 +4,8 @@ import (
 	"cloud.google.com/go/pubsub"
 	pubsubapp "cloud.google.com/go/pubsub/apiv1"
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/buraksecer/go-easy-pubsub/internal/error/clienterr"
-	"github.com/buraksecer/go-easy-pubsub/internal/error/convererr"
 	"github.com/buraksecer/go-easy-pubsub/internal/error/topicerr"
 	"github.com/buraksecer/go-easy-pubsub/internal/model/response/topicres"
 	"github.com/buraksecer/go-easy-pubsub/pkg/client"
@@ -91,9 +89,9 @@ func Exists(topicName string) (bool, error) {
 }
 
 // Topics list in project
-func Topics() topicres.TopicsModel {
+func Topics() topicres.Topics {
 
-	topics := topicres.TopicsModel{}
+	topics := topicres.Topics{}
 
 	c, ctx, err := client.Create(*_clientId)
 
@@ -161,14 +159,16 @@ func CreateSubscription(topicName string, subName string) {
 }
 
 // Subscriptions list in a project
-func Subscriptions(topicName string) {
+func Subscriptions(topicName string) (topicres.Subscriptions, error) {
+
+	subscriptions := topicres.Subscriptions{}
 
 	c, ctx, err := client.Create(*_clientId)
 
 	defer client.Close(c)
 
 	if err != nil {
-		log.Println(clienterr.ErrClientCannotCreate)
+		return subscriptions, clienterr.ErrClientCannotCreate
 	}
 
 	topic := c.Client.Topic(topicName)
@@ -186,8 +186,10 @@ func Subscriptions(topicName string) {
 		if err != nil {
 			log.Printf("Error: %s\n\n", err)
 		}
-		log.Println(sub)
+		subscriptions.Subscriptions = append(subscriptions.Subscriptions, sub.ID())
 	}
+
+	return subscriptions, nil
 }
 
 // Publish a new message to sub
@@ -205,14 +207,11 @@ func Publish(topicName string, message interface{}) (bool, error) {
 
 	defer topic.Stop()
 
-	m, err := json.Marshal(message)
-	if err != nil {
-		return false, convererr.ErrJsonMarshalCanNotBeParse
-	}
+	m := fmt.Sprintf("%v", message.(interface{}))
 
 	var results []*pubsub.PublishResult
 	r := topic.Publish(ctx, &pubsub.Message{
-		Data: m,
+		Data: []byte(m),
 	})
 
 	results = append(results, r)
@@ -230,14 +229,15 @@ func Publish(topicName string, message interface{}) (bool, error) {
 }
 
 // Receive get message to sub
-func Receive(subName string) {
+func Receive(subName string) ([]topicres.Receive, error) {
+
+	var receiveResponse []topicres.Receive
 
 	ctx := context.Background()
 
 	c, err := pubsubapp.NewSubscriberClient(ctx)
 	if err != nil {
-		log.Println(err)
-		return
+		return receiveResponse, err
 	}
 	defer c.Close()
 
@@ -249,9 +249,30 @@ func Receive(subName string) {
 	}
 	resp, err := c.Pull(ctx, req)
 	if err != nil {
-		log.Println(err)
-		return
+		return receiveResponse, err
 	}
 
-	log.Println("Success - ", resp.GetReceivedMessages())
+	if len(resp.ReceivedMessages) == 0 {
+		return receiveResponse, topicerr.ErrTopicReceivedMessagesNotFound
+	}
+
+	for _, m := range resp.ReceivedMessages {
+		receive := topicres.Receive{
+			AckId: m.AckId,
+			Data:  m.Message.Data,
+		}
+
+		err := c.Acknowledge(ctx, &pubsubpb.AcknowledgeRequest{
+			Subscription: sub, AckIds: []string{m.AckId},
+		})
+
+		if err != nil {
+			receive.Error = err.Error()
+		} else {
+			receive.Result = true
+		}
+		receiveResponse = append(receiveResponse, receive)
+	}
+
+	return receiveResponse, nil
 }
