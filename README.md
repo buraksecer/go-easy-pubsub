@@ -4,7 +4,7 @@
 ### Installation
 
 ```
-go get github.com/buraksecer/go-easy-pubsub v0.0.2
+go get github.com/buraksecer/go-easy-pubsub v0.0.3
 ```
 
 
