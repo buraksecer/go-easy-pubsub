@@ -19,9 +19,9 @@ jobs:
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
-      - uses: actions/checkout@v2
       
       - name: Set up Go
+      - uses: actions/checkout@v2
         with:
           go-version: 1.17
 
