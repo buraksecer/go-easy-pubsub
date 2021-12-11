@@ -17,8 +17,6 @@ func TestCreate(t *testing.T) {
 	t.Run("Create Client Test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)
 
-		defer Close(c)
-
 		if err != nil {
 			t.Error(clienterr.ErrClientCannotCreate)
 		}
@@ -26,7 +24,10 @@ func TestCreate(t *testing.T) {
 		_ = ctx
 
 		log.Println("Create client test is  Successful.")
+
+		defer Close(c)
 	})
+
 }
 
 // TestClose  testing close the client
