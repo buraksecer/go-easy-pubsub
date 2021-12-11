@@ -9,19 +9,19 @@ on:
 jobs:
   job1:
     runs-on: ubuntu-latest
+    
     env:
       GOOGLE_APPLICATION_CREDENTIALS: '${{ secrets.GOOGLE_CREDENTIALS }}'
     steps:
-      
+      - uses: actions/checkout@v2
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
-      
       - name: Set up Go
-      - uses: actions/checkout@v2
+        uses: actions/setup-go@v2
         with:
           go-version: 1.17
 
@@ -30,5 +30,3 @@ jobs:
 
       - name: Test
         run: go test -v ./...
-        
-        #test
