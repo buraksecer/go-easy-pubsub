@@ -18,14 +18,15 @@ func TestCreate(t *testing.T) {
 		c, ctx, err := Create(clientId)
 
 		if err != nil {
+			log.Println("Service error:", err)
 			t.Error(clienterr.ErrClientCannotCreate)
 		}
 
 		log.Println("Create client test is  Successful.")
 
 		_ = ctx
-		_ = c
-		//defer c.Client.Close()
+
+		defer c.Client.Close()
 	})
 
 }
