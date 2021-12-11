@@ -8,7 +8,7 @@ import (
 
 // clientId const
 const (
-	clientId = "google-client-id"
+	clientId = "personaltraining-333910"
 )
 
 // TestCreate testing create the client
