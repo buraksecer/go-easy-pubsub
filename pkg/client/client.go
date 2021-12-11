@@ -30,6 +30,6 @@ func Create(clientId string) (Client, context.Context, error) {
 }
 
 //Close is client operations
-func Close(client Client) {
-	client.Client.Close()
+func Close(client Client) error {
+	return client.Client.Close()
 }
