@@ -9,6 +9,8 @@ on:
 jobs:
   job1:
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: '${{ secrets.GOOGLE_CREDENTIALS }}'
     steps:
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
