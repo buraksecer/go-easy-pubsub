@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/pubsub"
 	"context"
 	"github.com/buraksecer/go-easy-pubsub/internal/error/clienterr"
+	"log"
 )
 
 //Client is a pub and sub struct
@@ -19,6 +20,7 @@ func Create(clientId string) (Client, context.Context, error) {
 	c, err := pubsub.NewClient(ctx, clientId)
 
 	if err != nil {
+		log.Println("Service error:", err)
 		err = clienterr.ErrClientCannotCreate
 	}
 
