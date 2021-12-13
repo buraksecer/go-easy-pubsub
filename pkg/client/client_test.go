@@ -10,7 +10,7 @@ const (
 	clientId = "google-client-id"
 )
 
-// TestCreate testing create the client
+// TestCreate test to create the client
 func TestCreate(t *testing.T) {
 	t.Run("Create client test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)
@@ -26,7 +26,7 @@ func TestCreate(t *testing.T) {
 	})
 }
 
-// TestClose  testing close the client
+// TestClose  test to close the client
 func TestClose(t *testing.T) {
 	t.Run("Close client test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)

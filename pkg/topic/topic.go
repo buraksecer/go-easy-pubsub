@@ -39,7 +39,8 @@ func Create(topicName string) error {
 		return topicerr.ErrTopicCanNotExists
 	}
 	if ok {
-		return topicerr.ErrTopicDoExist
+		log.Println(topicerr.ErrTopicDoExist)
+		return nil
 	}
 
 	topic, err := c.Client.CreateTopic(ctx, topicName)
@@ -124,17 +125,25 @@ func CreateSubscription(topicName string, subName string) error {
 		return clienterr.ErrClientCannotCreate
 	}
 
-	exist, errExists := Exists(topicName)
+	ok, errExists := Exists(topicName)
 	if errExists != nil {
 		return errExists
 	}
-	if !exist {
+	if !ok {
 		return topicerr.ErrTopicDoNotExist
 	}
 
 	topic := c.Client.Topic(topicName)
 
 	defer topic.Stop()
+
+	ok, err = ExistsSubscription(subName)
+	if err != nil {
+		return err
+	}
+	if ok {
+		return nil
+	}
 
 	sub, err := c.Client.CreateSubscription(ctx, subName, pubsub.SubscriptionConfig{
 		Topic:            topic,
@@ -241,7 +250,8 @@ func Receive(subName string) ([]topicres.Receive, error) {
 	}
 
 	if len(resp.ReceivedMessages) == 0 {
-		return receiveResponse, topicerr.ErrTopicReceivedMessagesNotFound
+		log.Println(topicerr.ErrTopicReceivedMessagesNotFound)
+		return receiveResponse, nil
 	}
 
 	for _, m := range resp.ReceivedMessages {
@@ -263,4 +273,19 @@ func Receive(subName string) ([]topicres.Receive, error) {
 	}
 
 	return receiveResponse, nil
+}
+
+// ExistsSubscription subs control in project
+func ExistsSubscription(subName string) (bool, error) {
+	c, ctx, err := client.Create(*_clientId)
+
+	defer client.Close(c)
+
+	if err != nil {
+		return false, clienterr.ErrClientCannotCreate
+	}
+
+	sub := c.Client.Subscription(subName)
+
+	return sub.Exists(ctx)
 }

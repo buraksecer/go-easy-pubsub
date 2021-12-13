@@ -12,6 +12,7 @@ const (
 	subName   = "sub-name"
 )
 
+//TestCreate test to create topic
 func TestCreate(t *testing.T) {
 	t.Run("Topic create test", func(t *testing.T) {
 		Init(clientId)
@@ -26,6 +27,7 @@ func TestCreate(t *testing.T) {
 	})
 }
 
+//TestDelete test to delete topic
 func TestDelete(t *testing.T) {
 	t.Run("Topic delete test", func(t *testing.T) {
 		Init(clientId)
@@ -40,6 +42,7 @@ func TestDelete(t *testing.T) {
 	})
 }
 
+//TestExists test to exist topic
 func TestExists(t *testing.T) {
 	t.Run("Topic exists test", func(t *testing.T) {
 		Init(clientId)
@@ -54,6 +57,7 @@ func TestExists(t *testing.T) {
 	})
 }
 
+//TestTopics test to get topic list
 func TestTopics(t *testing.T) {
 	t.Run("Get topic list test", func(t *testing.T) {
 		Init(clientId)
@@ -68,6 +72,7 @@ func TestTopics(t *testing.T) {
 	})
 }
 
+//TestCreateSubscription test to create subs
 func TestCreateSubscription(t *testing.T) {
 	t.Run("Create subscription test", func(t *testing.T) {
 		Init(clientId)
@@ -88,6 +93,7 @@ func TestCreateSubscription(t *testing.T) {
 	})
 }
 
+//TestSubscriptions test to get subs list
 func TestSubscriptions(t *testing.T) {
 	t.Run("Get subscription list test", func(t *testing.T) {
 		Init(clientId)
@@ -102,6 +108,7 @@ func TestSubscriptions(t *testing.T) {
 	})
 }
 
+//TestPublish test to publish new message
 func TestPublish(t *testing.T) {
 	t.Run("Publish message test", func(t *testing.T) {
 		Init(clientId)
@@ -116,6 +123,7 @@ func TestPublish(t *testing.T) {
 	})
 }
 
+//TestReceive test to receive new message
 func TestReceive(t *testing.T) {
 	t.Run("Receive message test", func(t *testing.T) {
 		Init(clientId)
@@ -126,6 +134,21 @@ func TestReceive(t *testing.T) {
 			t.Error(err)
 		} else {
 			log.Println("Receive message test is successful.")
+		}
+	})
+}
+
+//TestExistsSubscription test to exist subs
+func TestExistsSubscription(t *testing.T) {
+	t.Run("Exists subscription test", func(t *testing.T) {
+		Init(clientId)
+
+		_, err := ExistsSubscription(subName)
+
+		if err != nil {
+			t.Error(err)
+		} else {
+			log.Println("Exists subs test is successful.")
 		}
 	})
 }
