@@ -7,7 +7,7 @@ import (
 
 // param consts
 const (
-	clientId  = "google-client-id"
+	clientId  = "personaltraining-333910"
 	topicName = "client-topic-name"
 	subName   = "sub-name"
 )
@@ -72,7 +72,13 @@ func TestCreateSubscription(t *testing.T) {
 	t.Run("Create subscription test", func(t *testing.T) {
 		Init(clientId)
 
-		err := CreateSubscription(topicName, subName)
+		err := Create(topicName)
+
+		if err != nil {
+			t.Error(err)
+		}
+
+		err = CreateSubscription(topicName, subName)
 
 		if err != nil {
 			t.Error(err)
