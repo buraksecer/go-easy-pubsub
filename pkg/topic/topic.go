@@ -25,7 +25,6 @@ func Init(clientId string) {
 
 // Create a new topic in project
 func Create(topicName string) error {
-
 	c, ctx, err := client.Create(*_clientId)
 
 	defer client.Close(c)
@@ -40,7 +39,8 @@ func Create(topicName string) error {
 		return topicerr.ErrTopicCanNotExists
 	}
 	if ok {
-		return topicerr.ErrTopicDoExist
+		log.Println(topicerr.ErrTopicDoExist)
+		return nil
 	}
 
 	topic, err := c.Client.CreateTopic(ctx, topicName)
@@ -56,7 +56,6 @@ func Create(topicName string) error {
 
 // Delete topic in project
 func Delete(topicName string) (bool, error) {
-
 	c, ctx, err := client.Create(*_clientId)
 
 	defer client.Close(c)
@@ -75,7 +74,6 @@ func Delete(topicName string) (bool, error) {
 
 // Exists topic control in project
 func Exists(topicName string) (bool, error) {
-
 	c, ctx, err := client.Create(*_clientId)
 
 	defer client.Close(c)
@@ -89,8 +87,7 @@ func Exists(topicName string) (bool, error) {
 }
 
 // Topics list in project
-func Topics() topicres.Topics {
-
+func Topics() (topicres.Topics, error) {
 	topics := topicres.Topics{}
 
 	c, ctx, err := client.Create(*_clientId)
@@ -98,8 +95,7 @@ func Topics() topicres.Topics {
 	defer client.Close(c)
 
 	if err != nil {
-		log.Println(clienterr.ErrClientCannotCreate)
-		return topics
+		return topics, clienterr.ErrClientCannotCreate
 	}
 
 	it := c.Client.Topics(ctx)
@@ -116,33 +112,38 @@ func Topics() topicres.Topics {
 		topics.Topics = append(topics.Topics, t.String())
 	}
 
-	return topics
+	return topics, nil
 }
 
 // CreateSubscription a new sub in project
-func CreateSubscription(topicName string, subName string) {
+func CreateSubscription(topicName string, subName string) error {
 	c, ctx, err := client.Create(*_clientId)
 
 	defer client.Close(c)
 
 	if err != nil {
-		log.Println(clienterr.ErrClientCannotCreate)
-		return
+		return clienterr.ErrClientCannotCreate
 	}
 
-	exist, errExists := Exists(topicName)
+	ok, errExists := Exists(topicName)
 	if errExists != nil {
-		log.Println(errExists)
-		return
+		return errExists
 	}
-	if !exist {
-		log.Println(topicerr.ErrTopicDoNotExist)
-		return
+	if !ok {
+		return topicerr.ErrTopicDoNotExist
 	}
 
 	topic := c.Client.Topic(topicName)
 
 	defer topic.Stop()
+
+	ok, err = ExistsSubscription(subName)
+	if err != nil {
+		return err
+	}
+	if ok {
+		return nil
+	}
 
 	sub, err := c.Client.CreateSubscription(ctx, subName, pubsub.SubscriptionConfig{
 		Topic:            topic,
@@ -151,16 +152,15 @@ func CreateSubscription(topicName string, subName string) {
 	})
 
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
+	_ = sub
 
-	log.Println(sub)
+	return nil
 }
 
 // Subscriptions list in a project
 func Subscriptions(topicName string) (topicres.Subscriptions, error) {
-
 	subscriptions := topicres.Subscriptions{}
 
 	c, ctx, err := client.Create(*_clientId)
@@ -176,7 +176,6 @@ func Subscriptions(topicName string) (topicres.Subscriptions, error) {
 	defer topic.Stop()
 
 	for subs := topic.Subscriptions(ctx); ; {
-
 		sub, err := subs.Next()
 
 		if err == iterator.Done {
@@ -194,7 +193,6 @@ func Subscriptions(topicName string) (topicres.Subscriptions, error) {
 
 // Publish a new message to sub
 func Publish(topicName string, message interface{}) (bool, error) {
-
 	c, ctx, err := client.Create(*_clientId)
 
 	defer client.Close(c)
@@ -230,7 +228,6 @@ func Publish(topicName string, message interface{}) (bool, error) {
 
 // Receive get message to sub
 func Receive(subName string) ([]topicres.Receive, error) {
-
 	var receiveResponse []topicres.Receive
 
 	ctx := context.Background()
@@ -253,7 +250,8 @@ func Receive(subName string) ([]topicres.Receive, error) {
 	}
 
 	if len(resp.ReceivedMessages) == 0 {
-		return receiveResponse, topicerr.ErrTopicReceivedMessagesNotFound
+		log.Println(topicerr.ErrTopicReceivedMessagesNotFound)
+		return receiveResponse, nil
 	}
 
 	for _, m := range resp.ReceivedMessages {
@@ -275,4 +273,19 @@ func Receive(subName string) ([]topicres.Receive, error) {
 	}
 
 	return receiveResponse, nil
+}
+
+// ExistsSubscription subs control in project
+func ExistsSubscription(subName string) (bool, error) {
+	c, ctx, err := client.Create(*_clientId)
+
+	defer client.Close(c)
+
+	if err != nil {
+		return false, clienterr.ErrClientCannotCreate
+	}
+
+	sub := c.Client.Subscription(subName)
+
+	return sub.Exists(ctx)
 }

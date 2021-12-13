@@ -1,7 +1,6 @@
 package client
 
 import (
-	"github.com/buraksecer/go-easy-pubsub/internal/error/clienterr"
 	"log"
 	"testing"
 )
@@ -11,29 +10,25 @@ const (
 	clientId = "google-client-id"
 )
 
-// TestCreate testing create the client
+// TestCreate test to create the client
 func TestCreate(t *testing.T) {
-
-	t.Run("Create Client Test", func(t *testing.T) {
+	t.Run("Create client test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)
 
 		if err != nil {
-			t.Error(clienterr.ErrClientCannotCreate)
+			t.Error(err)
+		} else {
+			log.Println("Create client test is successful.")
 		}
-
-		log.Println("Create client test is  Successful.")
-
 		_ = ctx
 
 		defer c.Client.Close()
 	})
-
 }
 
-// TestClose  testing close the client
+// TestClose  test to close the client
 func TestClose(t *testing.T) {
-
-	t.Run("Close Client Test", func(t *testing.T) {
+	t.Run("Close client test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)
 
 		if err != nil {
@@ -44,10 +39,10 @@ func TestClose(t *testing.T) {
 
 		if err != nil {
 			t.Error(err)
+		} else {
+			log.Println("Close client test is successful.")
 		}
 
 		_ = ctx
-
-		log.Println("Close client test is  Successful.")
 	})
 }

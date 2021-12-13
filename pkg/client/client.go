@@ -14,7 +14,6 @@ type Client struct {
 
 // Create a new client in project
 func Create(clientId string) (Client, context.Context, error) {
-
 	ctx := context.Background()
 
 	c, err := pubsub.NewClient(ctx, clientId)

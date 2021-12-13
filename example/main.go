@@ -21,7 +21,7 @@ func main() {
 	topic.Create(topicName)
 
 	// Get a topic list
-	topics := topic.Topics()
+	topics, _ := topic.Topics()
 
 	for _, v := range topics.Topics {
 		fmt.Println(v)
