@@ -12,14 +12,13 @@ const (
 
 // TestCreate testing create the client
 func TestCreate(t *testing.T) {
-
-	t.Run("Create Client Test", func(t *testing.T) {
+	t.Run("Create client test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)
 
 		if err != nil {
 			t.Error(err)
 		} else {
-			log.Println("Create client test is Successful.")
+			log.Println("Create client test is successful.")
 		}
 		_ = ctx
 
@@ -29,8 +28,7 @@ func TestCreate(t *testing.T) {
 
 // TestClose  testing close the client
 func TestClose(t *testing.T) {
-
-	t.Run("Close Client Test", func(t *testing.T) {
+	t.Run("Close client test", func(t *testing.T) {
 		c, ctx, err := Create(clientId)
 
 		if err != nil {
@@ -42,7 +40,7 @@ func TestClose(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		} else {
-			log.Println("Close client test is Successful.")
+			log.Println("Close client test is successful.")
 		}
 
 		_ = ctx
